@@ -1,36 +1,3 @@
-::[Bat To Exe Converter]
-::
-::YAwzoRdxOk+EWAjk
-::fBw5plQjdCyDJGyX8VAjFBhcTRaDAE+1EbsQ5+n//NaXsEQLVeEmNYLU3rHDN+kd7krzZtsg13NUpO4NCxddPjGifAw4rC5rlUvLPsST0w==
-::YAwzuBVtJxjWCl3EqQJgSA==
-::ZR4luwNxJguZRRnk
-::Yhs/ulQjdF+5
-::cxAkpRVqdFKZSDk=
-::cBs/ulQjdF+5
-::ZR41oxFsdFKZSDk=
-::eBoioBt6dFKZSDk=
-::cRo6pxp7LAbNWATEpCI=
-::egkzugNsPRvcWATEpCI=
-::dAsiuh18IRvcCxnZtBJQ
-::cRYluBh/LU+EWAnk
-::YxY4rhs+aU+JeA==
-::cxY6rQJ7JhzQF1fEqQJQ
-::ZQ05rAF9IBncCkqN+0xwdVs0
-::ZQ05rAF9IAHYFVzEqQJQ
-::eg0/rx1wNQPfEVWB+kM9LVsJDGQ=
-::fBEirQZwNQPfEVWB+kM9LVsJDGQ=
-::cRolqwZ3JBvQF1fEqQJQ
-::dhA7uBVwLU+EWDk=
-::YQ03rBFzNR3SWATElA==
-::dhAmsQZ3MwfNWATElA==
-::ZQ0/vhVqMQ3MEVWAtB9wSA==
-::Zg8zqx1/OA3MEVWAtB9wSA==
-::dhA7pRFwIByZRRnk
-::Zh4grVQjdCuDJHqI8UM+LQlHcCeOOWq0A6dS7fD+jw==
-::YB416Ek+ZG8=
-::
-::
-::978f952a14a936cc963da21a135fa983
 @echo off
 chcp 65001 >nul
 title EagleRC's System Cleaner
@@ -44,20 +11,13 @@ if %errorlevel% neq 0 (
     echo   Administrator Privileges Required!
     echo   Restarting EagleRC's Cleaner as Admin...
     echo ==========================================================
-    timeout /t 2 >nul
     powershell -Command "Start-Process '%~f0' -Verb RunAs"
     exit /b
 )
 
-:: ==========================================================
-::   EagleRC - Temp File & Folder Cleaner
-::   Author : EagleRC
-::   Purpose: Clean Temp, Prefetch, Recent, and Caches
-::   Branding: "Eagle RC!!"
-:: ==========================================================
-
 cls
 echo.
+:: Fast Animation (5ms delay)
 call :animate "   ███████╗ █████╗  ██████╗ ██╗     ███████╗        ██████╗  ██████╗"
 call :animate "   ██╔════╝██╔══██╗██╔════╝ ██║     ██╔════╝        ██╔══██╗██╔════╝"
 call :animate "   █████╗  ███████║██║  ███╗██║     █████╗          ██████╔╝██║     "
@@ -65,14 +25,7 @@ call :animate "   ██╔══╝  ██╔══██║██║   ██
 call :animate "   ███████╗██║  ██║╚██████╔╝███████╗███████╗        ██║  ██║╚██████╗"
 call :animate "   ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝        ╚═╝  ╚═╝ ╚═════╝"
 echo.
-call :animate "                       ██████╗  ██████╗ ████████╗"
-call :animate "                       ██╔══██╗██╔═══██╗╚══██╔══╝"
-call :animate "                       ██████╔╝██║   ██║   ██║   "
-call :animate "                       ██╔══██╗██║   ██║   ██║   "
-call :animate "                       ██████╔╝╚██████╔╝   ██║   "
-call :animate "                       ╚═════╝  ╚═════╝    ╚═╝   "
-echo.
-echo                           Version : v1.2 (Stable)
+echo                           Version : v1.3 (High Speed)
 echo.
 echo                 E A G L E   R C ' S   C L E A N E R
 echo.
@@ -85,42 +38,97 @@ echo.
 echo Press [1] to Start System Clean
 echo Press [0] to Exit
 echo.
-choice /c 10 /n /m "Your Choice: "
+set /p choice="Your Choice: "
 
-if errorlevel 2 exit
-if errorlevel 1 goto CLEAN
+if "%choice%"=="0" exit
+if "%choice%"=="1" goto CLEAN
+goto MENU
 
 :CLEAN
 cls
 echo.
 echo ==========================================================
-echo [*] Cleaning in progress... please wait.
+echo [*] Cleaning in progress...
 echo ==========================================================
 echo.
 
-echo [~] Cleaning User Temp folder...
+echo [~] Cleaning User Temp...
 del /s /f /q "%temp%\*.*" >nul 2>&1
 for /d %%p in ("%temp%\*") do rmdir /s /q "%%p" >nul 2>&1
 
-echo [~] Cleaning Windows Temp folder...
+echo [~] Cleaning Windows Temp...
 del /s /f /q "C:\Windows\Temp\*.*" >nul 2>&1
 for /d %%p in ("C:\Windows\Temp\*") do rmdir /s /q "%%p" >nul 2>&1
 
-echo [~] Cleaning Prefetch folder...
+echo [~] Cleaning Prefetch...
 del /s /f /q "C:\Windows\Prefetch\*.*" >nul 2>&1
 for /d %%p in ("C:\Windows\Prefetch\*") do rmdir /s /q "%%p" >nul 2>&1
 
-echo [~] Cleaning Recent files...
-del /s /f /q "%AppData%\Microsoft\Windows\Recent\*.*" >nul 2>&1
-for /d %%p in ("%AppData%\Microsoft\Windows\Recent\*") do rmdir /s /q "%%p" >nul 2>&1
+echo [~] Cleaning Windows Update Cache...
+:: Stop the Windows Update service temporarily to unlock files
+net stop wuauserv >nul 2>&1
+
+:: Wait 2 seconds to let the service finish stopping completely
+timeout /t 2 /nobreak >nul
+
+del /s /f /q "C:\Windows\SoftwareDistribution\Download\*.*" >nul 2>&1
+for /d %%p in ("C:\Windows\SoftwareDistribution\Download\*") do rmdir /s /q "%%p" >nul 2>&1
+
+:: Wait 2 seconds before starting the service back up
+timeout /t 2 /nobreak >nul
+
+:: Restart the Windows Update service
+net start wuauserv >nul 2>&1
+
+echo [~] Cleaning DirectX and GPU Shader Caches...
+:: DirectX
+del /s /f /q "%LocalAppData%\D3DSCache\*.*" >nul 2>&1
+for /d %%p in ("%LocalAppData%\D3DSCache\*") do rmdir /s /q "%%p" >nul 2>&1
+:: NVIDIA Caches
+del /s /f /q "%LocalAppData%\NVIDIA\GLCache\*.*" >nul 2>&1
+del /s /f /q "%LocalAppData%\NVIDIA\ComputeCache\*.*" >nul 2>&1
+:: AMD Caches
+del /s /f /q "%LocalAppData%\AMD\DxCache\*.*" >nul 2>&1
+del /s /f /q "%LocalAppData%\AMD\GLCache\*.*" >nul 2>&1
+
+echo.
+echo ==========================================================
+echo   OPTIONAL: View Full C: Drive Tree Structure
+echo ==========================================================
+echo   This will open a separate window showing the full
+echo   folder tree of your C: drive. It may take a while
+echo   and does NOT require administrator privileges.
+echo.
+echo   Press [1] to Run C: Drive Tree
+echo   Press [0] to Skip and Continue
+echo.
+choice /c 10 /n /t 5 /d 0 /m "Your Choice: "
+if errorlevel 2 goto SKIP_TREE
+if errorlevel 1 goto RUN_TREE
+
+:RUN_TREE
+echo.
+echo [~] Opening C: Drive Tree in a separate window...
+start "C: Drive Tree" cmd /c "tree C:\ & echo. & echo === Tree Complete === & pause"
+echo [~] Tree window launched. Continuing cleanup...
+goto AFTER_TREE
+
+:SKIP_TREE
+echo.
+echo [~] Skipped C: Drive Tree. Continuing cleanup...
+goto AFTER_TREE
+
+:AFTER_TREE
+
+echo [~] Emptying Recycle Bin...
+powershell -NoProfile -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue" >nul 2>&1
 
 echo [~] Flushing DNS Cache...
 ipconfig /flushdns >nul 2>&1
 
 echo.
 echo ==========================================================
-echo      SUCCESS: All Useless Files and Folders Deleted!
-echo                 Your PC is Optimized now.
+echo      SUCCESS: Cleanup Complete!
 echo ==========================================================
 echo.
 echo                   ---Powered by EagleRC!---
@@ -128,8 +136,9 @@ echo.
 pause
 exit
 
-:: ================= ANIMATION FUNCTION =================
+:: ================= FAST ANIMATION FUNCTION =================
 :animate
 echo %~1
-powershell -command "Start-Sleep -Milliseconds 15"
+:: Reduced delay for a faster, clearer transition
+powershell -command "Start-Sleep -m 5"
 exit /b
