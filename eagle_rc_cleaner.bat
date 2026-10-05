@@ -17,13 +17,15 @@ if %errorlevel% neq 0 (
 
 cls
 echo.
-:: Fast Animation (5ms delay)
+
+:: ================= FAST ANIMATION =================
 call :animate "   ███████╗ █████╗  ██████╗ ██╗     ███████╗        ██████╗  ██████╗"
 call :animate "   ██╔════╝██╔══██╗██╔════╝ ██║     ██╔════╝        ██╔══██╗██╔════╝"
 call :animate "   █████╗  ███████║██║  ███╗██║     █████╗          ██████╔╝██║     "
 call :animate "   ██╔══╝  ██╔══██║██║   ██║██║     ██╔══╝          ██╔══██╗██║     "
 call :animate "   ███████╗██║  ██║╚██████╔╝███████╗███████╗        ██║  ██║╚██████╗"
 call :animate "   ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝        ╚═╝  ╚═╝ ╚═════╝"
+
 echo.
 echo                           Version : v1.3 (High Speed)
 echo.
@@ -38,11 +40,12 @@ echo.
 echo Press [1] to Start System Clean
 echo Press [0] to Exit
 echo.
-set /p choice="Your Choice: "
+set /p "choice=Your Choice: "
 
-if "%choice%"=="0" exit
+if "%choice%"=="0" exit /b
 if "%choice%"=="1" goto CLEAN
 goto MENU
+
 
 :CLEAN
 cls
@@ -65,31 +68,42 @@ del /s /f /q "C:\Windows\Prefetch\*.*" >nul 2>&1
 for /d %%p in ("C:\Windows\Prefetch\*") do rmdir /s /q "%%p" >nul 2>&1
 
 echo [~] Cleaning Windows Update Cache...
-:: Stop the Windows Update service temporarily to unlock files
+
+:: Stop Windows Update service temporarily
 net stop wuauserv >nul 2>&1
 
-:: Wait 2 seconds to let the service finish stopping completely
+:: Wait 2 seconds for the service to stop
 timeout /t 2 /nobreak >nul
 
 del /s /f /q "C:\Windows\SoftwareDistribution\Download\*.*" >nul 2>&1
 for /d %%p in ("C:\Windows\SoftwareDistribution\Download\*") do rmdir /s /q "%%p" >nul 2>&1
 
-:: Wait 2 seconds before starting the service back up
+:: Wait 2 seconds before restarting the service
 timeout /t 2 /nobreak >nul
 
-:: Restart the Windows Update service
+:: Restart Windows Update service
 net start wuauserv >nul 2>&1
 
 echo [~] Cleaning DirectX and GPU Shader Caches...
-:: DirectX
+
+:: DirectX Shader Cache
 del /s /f /q "%LocalAppData%\D3DSCache\*.*" >nul 2>&1
 for /d %%p in ("%LocalAppData%\D3DSCache\*") do rmdir /s /q "%%p" >nul 2>&1
+
 :: NVIDIA Caches
 del /s /f /q "%LocalAppData%\NVIDIA\GLCache\*.*" >nul 2>&1
+for /d %%p in ("%LocalAppData%\NVIDIA\GLCache\*") do rmdir /s /q "%%p" >nul 2>&1
+
 del /s /f /q "%LocalAppData%\NVIDIA\ComputeCache\*.*" >nul 2>&1
+for /d %%p in ("%LocalAppData%\NVIDIA\ComputeCache\*") do rmdir /s /q "%%p" >nul 2>&1
+
 :: AMD Caches
 del /s /f /q "%LocalAppData%\AMD\DxCache\*.*" >nul 2>&1
+for /d %%p in ("%LocalAppData%\AMD\DxCache\*") do rmdir /s /q "%%p" >nul 2>&1
+
 del /s /f /q "%LocalAppData%\AMD\GLCache\*.*" >nul 2>&1
+for /d %%p in ("%LocalAppData%\AMD\GLCache\*") do rmdir /s /q "%%p" >nul 2>&1
+
 
 echo.
 echo ==========================================================
@@ -102,21 +116,28 @@ echo.
 echo   Press [1] to Run C: Drive Tree
 echo   Press [0] to Skip and Continue
 echo.
+
 choice /c 10 /n /t 5 /d 0 /m "Your Choice: "
+
 if errorlevel 2 goto SKIP_TREE
 if errorlevel 1 goto RUN_TREE
+
 
 :RUN_TREE
 echo.
 echo [~] Opening C: Drive Tree in a separate window...
+
 start "C: Drive Tree" cmd /c "tree C:\ & echo. & echo === Tree Complete === & pause"
+
 echo [~] Tree window launched. Continuing cleanup...
 goto AFTER_TREE
+
 
 :SKIP_TREE
 echo.
 echo [~] Skipped C: Drive Tree. Continuing cleanup...
 goto AFTER_TREE
+
 
 :AFTER_TREE
 
@@ -134,11 +155,14 @@ echo.
 echo                   ---Powered by EagleRC!---
 echo.
 pause
-exit
+exit /b
+
 
 :: ================= FAST ANIMATION FUNCTION =================
 :animate
 echo %~1
+
 :: Reduced delay for a faster, clearer transition
-powershell -command "Start-Sleep -m 5"
+powershell -NoProfile -Command "Start-Sleep -Milliseconds 5"
+
 exit /b
